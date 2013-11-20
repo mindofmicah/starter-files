@@ -1,0 +1,14 @@
+{
+    "name": "mindofmicah/starter-files",
+    "type": "library",
+    "description": "Collection of files I like to have for starting a new Laravel project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Micah Eschbacher"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    }
+}
