@@ -38,14 +38,16 @@ class AliasAdderCommand extends Command {
 	public function fire()
 	{
 		$config_path = app_path() . '/config/app.php';
-		$contents = File::get($config_path);
+		$contents    = File::get($config_path);
 
-		$alias = $this->argument('alias');
+		$alias   = $this->argument('alias');
 		$command = $this->argument('command_path');
 		
-		$new_content = $this->buildNewContent($contents, $this->buildNewEntry($alias, $command));
+		File::put(
+			$config_path, 
+			$this->buildNewContent($contents, $this->buildNewEntry($alias, $command));
+		);
 		
-		File::put($config_path, $new_content);
 		$this->info('Added alias ' . $alias . ' for command ' . $command);
 	}
 
