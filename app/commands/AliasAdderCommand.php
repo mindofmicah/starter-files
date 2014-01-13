@@ -40,24 +40,21 @@ class AliasAdderCommand extends Command {
 		$config_path = app_path() . '/config/app.php';
 		$contents = File::get($config_path);
 
-		$alias = 'Tacos';
-		$command = 'mindofmicah\Tacos';
+		$alias = $this->argument('alias');
+		$command = $this->argument('command_path');
 		
 		$strpos = strpos($contents, '\'aliases\'');
 		$closing = strpos($contents, ')', $strpos);
-		$this->info($closing);
-		$new = substr($contents,0,$closing) . $this->buildNewEntry() .  substr($contents,$closing);
-		$pattern = '%\'aliases\' => array\((.+?)\)%ms';
-	
 		
-	
+		$new = substr($contents, 0, $closing) . $this->buildNewEntry($alias, $command) .  substr($contents,$closing);
+		
 		File::put($config_path, $new);
-		$this->info('Added alias ' . $this->argument('alias') . ' for command ' . $this->argument('command_path'));
+		$this->info('Added alias ' . $alias . ' for command ' . $command);
 	}
 
-	protected function buildNewEntry()
+	protected function buildNewEntry($alias, $command)
 	{
-		return "\t".'\''.$this->argument('alias').'\' => \''.$this->argument('command_path').'\',' . "\n\t";
+		return "\t'{$alias}' => '{$command}',\n\t";
 	}
 	
 	/**
