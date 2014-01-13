@@ -43,15 +43,20 @@ class AliasAdderCommand extends Command {
 		$alias = $this->argument('alias');
 		$command = $this->argument('command_path');
 		
-		$strpos = strpos($contents, '\'aliases\'');
-		$closing = strpos($contents, ')', $strpos);
+		$new_content = $this->buildNewContent($contents, $this->buildNewEntry($alias, $command));
 		
-		$new = substr($contents, 0, $closing) . $this->buildNewEntry($alias, $command) .  substr($contents,$closing);
-		
-		File::put($config_path, $new);
+		File::put($config_path, $new_content);
 		$this->info('Added alias ' . $alias . ' for command ' . $command);
 	}
 
+	protected function buildNewContent($original, $new_command)
+	{	
+		$strpos = strpos($original, '\'aliases\'');
+		$closing = strpos($original, ')', $strpos);
+		
+		return substr($contents, 0, $closing) . $new_command .  substr($contents,$closing);
+	}
+	
 	protected function buildNewEntry($alias, $command)
 	{
 		return "\t'{$alias}' => '{$command}',\n\t";
