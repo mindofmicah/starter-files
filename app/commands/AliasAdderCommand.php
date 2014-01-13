@@ -3,6 +3,7 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Illuminate\Filesystem\Filesystem as File;
 
 class AliasAdderCommand extends Command {
 
@@ -13,6 +14,8 @@ class AliasAdderCommand extends Command {
 	 */
 	protected $name = 'alias:add';
 
+	protected $file;
+	
 	/**
 	 * The console command description.
 	 *
@@ -25,8 +28,9 @@ class AliasAdderCommand extends Command {
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct(File $file)
 	{
+		$this->file = $file;
 		parent::__construct();
 	}
 
@@ -38,14 +42,14 @@ class AliasAdderCommand extends Command {
 	public function fire()
 	{
 		$config_path = app_path() . '/config/app.php';
-		$contents    = File::get($config_path);
+		$contents    = $this->file->get($config_path);
 
 		$alias   = $this->argument('alias');
 		$command = $this->argument('command_path');
 		
-		File::put(
+		$this->file->put(
 			$config_path, 
-			$this->buildNewContent($contents, $this->buildNewEntry($alias, $command));
+			$this->buildNewContent($contents, $this->buildNewEntry($alias, $command))
 		);
 		
 		$this->info('Added alias ' . $alias . ' for command ' . $command);
@@ -56,7 +60,7 @@ class AliasAdderCommand extends Command {
 		$strpos = strpos($original, '\'aliases\'');
 		$closing = strpos($original, ')', $strpos);
 		
-		return substr($contents, 0, $closing) . $new_command .  substr($contents,$closing);
+		return substr($original, 0, $closing) . $new_command .  substr($original, $closing);
 	}
 	
 	protected function buildNewEntry($alias, $command)
