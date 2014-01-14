@@ -4,7 +4,7 @@ View::composer('admin.nav', function($view) {
     $view->with('links', $admin_links);
 });
 Route::get('/', function () {
-    return View::make('home');
+    return View::make('hello');
 });
 
 Route::group(array('prefix' => 'admin'), function () {
